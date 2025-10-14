@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardSarcophagus.Domain", "CardSarcophagus.Domain\CardSarcophagus.Domain.csproj", "{35398009-248C-4468-BF61-20F1770DB99D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardSarcophagus.Infra", "CardSarcophagus.Infra\CardSarcophagus.Infra.csproj", "{6D01FFE7-4628-493A-BAAB-ED182005E46A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardSarcophagus.Infra.CrossCutting.IoC", "CardSarcophagus.Infra.CrossCutting.IoC\CardSarcophagus.Infra.CrossCutting.IoC.csproj", "{1816C8BF-66B4-4A08-948D-419324376039}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardSarcophagus.Infra.Scraping", "CardSarcophagus.Infra.Scraping\CardSarcophagus.Infra.Scraping.csproj", "{C88C23EE-6D84-4BA7-B6FA-04D46C1A0A87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardSarcophagus.Presentation", "CardSarcophagus.Presentation\CardSarcophagus.Presentation.csproj", "{FD6F591B-D569-48E2-80A6-4252EC7319F7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{35398009-248C-4468-BF61-20F1770DB99D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35398009-248C-4468-BF61-20F1770DB99D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35398009-248C-4468-BF61-20F1770DB99D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35398009-248C-4468-BF61-20F1770DB99D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D01FFE7-4628-493A-BAAB-ED182005E46A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D01FFE7-4628-493A-BAAB-ED182005E46A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D01FFE7-4628-493A-BAAB-ED182005E46A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D01FFE7-4628-493A-BAAB-ED182005E46A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1816C8BF-66B4-4A08-948D-419324376039}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1816C8BF-66B4-4A08-948D-419324376039}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1816C8BF-66B4-4A08-948D-419324376039}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1816C8BF-66B4-4A08-948D-419324376039}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C88C23EE-6D84-4BA7-B6FA-04D46C1A0A87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C88C23EE-6D84-4BA7-B6FA-04D46C1A0A87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C88C23EE-6D84-4BA7-B6FA-04D46C1A0A87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C88C23EE-6D84-4BA7-B6FA-04D46C1A0A87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD6F591B-D569-48E2-80A6-4252EC7319F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD6F591B-D569-48E2-80A6-4252EC7319F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD6F591B-D569-48E2-80A6-4252EC7319F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD6F591B-D569-48E2-80A6-4252EC7319F7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
