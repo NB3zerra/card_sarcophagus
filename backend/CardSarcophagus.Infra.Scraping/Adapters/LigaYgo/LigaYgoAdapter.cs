@@ -1,4 +1,5 @@
 using System.Text.Json;
+using CardSarcophagus.Infra.Scraping.Adapters.Base;
 using CardSarcophagus.Infra.Scraping.Interfaces;
 using CardSarcophagus.Infra.Scraping.Models;
 using Microsoft.Extensions.Logging;
@@ -6,15 +7,16 @@ using Microsoft.Playwright;
 
 namespace CardSarcophagus.Infra.Scraping.Adapters.LigaYgo
 {
-    public class LigaYgoAdapter : IPriceProvider
+    public class LigaYgoAdapter : BaseScrapingAdapter, IPriceProvider
     {
-        private readonly IPlaywright _playwright;
-        private readonly HttpClient _httpClient;
         private readonly ILogger<LigaYgoAdapter> _logger;
-        public LigaYgoAdapter(IHttpClientFactory httpClientFactory, IPlaywright playwright, ILogger<LigaYgoAdapter> logger)
+        public LigaYgoAdapter(
+            IPlaywright playwright,
+            IBrowser browser,
+            ILogger<LigaYgoAdapter> logger
+            )
+        : base(playwright, browser)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _playwright = playwright;
             _logger = logger;
         }
 
@@ -22,11 +24,7 @@ namespace CardSarcophagus.Infra.Scraping.Adapters.LigaYgo
         {
             try
             {
-                var url = $"https://www.ligayugioh.com.br/?view=cards/card&card={Uri.EscapeDataString(cardName)}";
-
-                await using var browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
-                var page = await browser.NewPageAsync();
-                await page.GotoAsync(url);
+                var page = await NavigateToPage($"https://www.ligayugioh.com.br/?view=cards/card&card={Uri.EscapeDataString(cardName)}");
 
                 var cardInfoContainerHTMLElements = page.Locator("div.container-infos");
                 var itemName = (await cardInfoContainerHTMLElements.Locator("div.container-title > div.name > div.item-name").TextContentAsync())?.Trim();
@@ -40,51 +38,45 @@ namespace CardSarcophagus.Infra.Scraping.Adapters.LigaYgo
                 await showMarketplaceListings.ClickAsync();
                 await page.WaitForSelectorAsync("#full-average-price");
 
-                var marketplaceAveragePricingListingModalHTMLElement = page.Locator("div#full-average-price > div.modal-content > div.body > div#container-fullprice > div.container-edition");
+                var marketplaceEditionContainerModalHTMLElement = page.Locator("div#full-average-price > div.modal-content > div.body > div#container-fullprice > div.container-edition");
 
                 var tradingCardListing = new List<TradingCardListing>();
 
-                var priceListingCount = await marketplaceAveragePricingListingModalHTMLElement.CountAsync();
-
-                for (var listingIndex = 0; listingIndex < priceListingCount; listingIndex++)
+                for (var listingIndex = 0; listingIndex < await marketplaceEditionContainerModalHTMLElement.CountAsync(); listingIndex++)
                 {
-                    var extrasHTMLElement = marketplaceAveragePricingListingModalHTMLElement.Locator("div.edition-price-extras > div.container-extras");
+                    var listingHTMLItem = marketplaceEditionContainerModalHTMLElement.Nth(listingIndex);
 
-                    var extras = new List<string>();
-
-                    for (var extrasIndex = 0; extrasIndex < await extrasHTMLElement.CountAsync(); extrasIndex++)
-                    {
-                        var extrasHTMLItem = extrasHTMLElement.Nth(extrasIndex);
-                        extras.Add(await extrasHTMLItem.Locator("div").TextContentAsync());
-                    }
-
-                    var listingHTMLItem = marketplaceAveragePricingListingModalHTMLElement.Nth(listingIndex);
+                    var editionPriceExtrasHTMLElement = listingHTMLItem.Locator("div.edition-price-extras");
 
                     var collectionName = await listingHTMLItem.Locator("div.label-edition > a").TextContentAsync() ?? string.Empty;
-                    var cardHigherPrice = (await listingHTMLItem.Locator("div.edition-price-extras > div.price.price-max").TextContentAsync())?.Trim() ?? string.Empty;
-                    var cardLowerPrice = (await listingHTMLItem.Locator("div.edition-price-extras > div.price.price-min").TextContentAsync())?.Trim() ?? string.Empty;
-                    var cardMidPrice = (await listingHTMLItem.Locator("div.edition-price-extras > div.price.price-medium").TextContentAsync())?.Trim() ?? string.Empty;
 
-
-                    var listing = new TradingCardListing
+                    for (var extrasIndex = 0; extrasIndex < await editionPriceExtrasHTMLElement.CountAsync(); extrasIndex++)
                     {
-                        CollectionName = collectionName,
-                        CardHigherPrice = cardHigherPrice,
-                        CardLowerPrice = cardLowerPrice,
-                        CardMidPrice = cardMidPrice,
-                        CardName = itemName,
-                        CardNameInEnglish = englishItemName,
-                        Extras = extras
+                        var priceListingForCurrentExtra = editionPriceExtrasHTMLElement.Nth(extrasIndex);
 
-                    };
+                        var extraName = await priceListingForCurrentExtra.Locator("div.container-extras").TextContentAsync() ?? string.Empty;
+                        var extraLowerPrice = (await priceListingForCurrentExtra.Locator("div.price.price-min").TextContentAsync())?.Trim() ?? string.Empty;
+                        var extraMidPrice = (await priceListingForCurrentExtra.Locator("div.price.price-medium").TextContentAsync())?.Trim() ?? string.Empty;
+                        var extraHigherPrice = (await priceListingForCurrentExtra.Locator("div.price.price-max").TextContentAsync())?.Trim() ?? string.Empty;
 
-                    tradingCardListing.Add(listing);
+                        var listing = new TradingCardListing
+                        {
+                            CollectionName = collectionName,
+                            CardHigherPrice = extraHigherPrice,
+                            CardLowerPrice = extraLowerPrice,
+                            CardMidPrice = extraMidPrice,
+                            Extra = extraName
+                        };
+
+                        tradingCardListing.Add(listing);
+                    }
                 }
-
                 _logger.LogInformation("Scraping done for card: {cardName}", englishItemName);
 
                 return new MarketplaceListing
                 {
+                    CardName = cardName,
+                    CardNameInEnglish = englishItemName,
                     Marketplace = ESourceMarketplace.LIGA_YGO.ToString(),
                     TradingCardListing = tradingCardListing
                 }; ;
