@@ -5,6 +5,9 @@ namespace CardSarcophagus.Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+#if(!DEBUG)
+[ApiExplorerSettings(IgnoreApi = true)]
+#endif
     public class ScrapingController : ControllerBase
     {
         private readonly IPriceProviderService _priceProviderService;
@@ -20,5 +23,5 @@ namespace CardSarcophagus.Presentation.Controllers
             var priceResult = await _priceProviderService.GetPriceAsync(cardName);
             return Ok(priceResult);
         }
-    }    
+    }
 }

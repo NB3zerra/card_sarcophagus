@@ -78,9 +78,10 @@ namespace CardSarcophagus.Infra.Scraping.Adapters.LigaYgo
 
                     };
 
-                    _logger.LogInformation("cardListing : {listing}", JsonSerializer.Serialize(listing));
                     tradingCardListing.Add(listing);
                 }
+
+                _logger.LogInformation("Scraping done for card: {cardName}", englishItemName);
 
                 return new MarketplaceListing
                 {
@@ -88,6 +89,7 @@ namespace CardSarcophagus.Infra.Scraping.Adapters.LigaYgo
                     TradingCardListing = tradingCardListing
                 }; ;
             }
+
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while fetching price");
