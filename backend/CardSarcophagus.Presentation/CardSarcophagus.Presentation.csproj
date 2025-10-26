@@ -11,4 +11,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CardSarcophagus.Infra.CrossCutting.IoC\CardSarcophagus.Infra.CrossCutting.IoC.csproj" />
+    <ProjectReference Include="..\CardSarcophagus.Infra\CardSarcophagus.Infra.csproj" />
+    <ProjectReference Include="..\CardSarcophagus.Infra.Scraping\CardSarcophagus.Infra.Scraping.csproj" />
+  </ItemGroup>
+
 </Project>
